@@ -4,6 +4,9 @@ jdk:
   - openjdk8
   - openjdk9
 
+services:
+  - docker
+
 env:
   - COVERAGE=0.057 BUILD_TARGET=./monolithic/ui
   - COVERAGE=0.148 BUILD_TARGET=./monolithic/service/cart
@@ -13,6 +16,10 @@ env:
   - COVERAGE=0.124 BUILD_TARGET=./monolithic/repository/product
   - COVERAGE=0.318 BUILD_TARGET=./monolithic/repository/user
 
+global:
+  - DOCKER_LOGIN=justrules
+  - secure: qBrloE/tyvGwRu0XlUHQJ8UA31CAe5z+olDbijvB4k1LlU+yyWTh9yPTNVteEXMLo658iSgfZ3tqFIUY95ibxb68KDW8icIMjNBuiYiklKg5EAmkiazmePD7rbME8oMp8c5LHxrIzt9uZRM1k/YRBGpVzAE7IukY1TrzpyxxgHEtiaP8TGrTgdhKMWhNI2Vafyd7dD3eyiR6yHk3hO+07e/ZKwZil9lUzdxhanK9putBDFqzj15JY0DkBYuH1YI/j/F9cBIKUSTWArfjuao0IkkDbZDLbEoe207ZywvgyCrSCqrHNYEX7N4BtGvT3yT2yKfEzAS+L1s2FbwwSnrpQChz3CIMZw3sz7vVgzwYcCcCba5xC8QzoubzgFfAg3T8ZJwEGfS0m04yXbViF4UoBfICS7IQrdSAdd7obbTrjb0CYHWEdF2zoInqnuzRCzj271cWX1/48qyFibY3VCXFSZKF0zb2xRESp3Wj+3xIvzjk6po232dUp1rrptDRrVAqiC0rrKQs4ASCj3BILUNI4yL4AEIJe4H++FwBLXYApLkn/CBc3Qlvh33Gt/jhWfFqeivQPnhj6UGkpVpj3OgqRowlzf2BjRvXJfO+YEfLoDk9hZgD95Wr88dLGtTij6rYxm4/jIYsX0cRuPfY9YDZqfOIoHWTqPdzj4dwRllAIvY=
+
 install:
   - ./gradlew clean jar
 
@@ -21,3 +28,10 @@ script:
 
 after_success:
   - find . -name jacocoTestReport.csv|xargs cat|awk -F',' '{print $3" "$4" "$5}'
+
+deploy:
+  provider: script
+  script: bash -c "echo \"${DOCKER_PASSWORD}\" | docker login --username \"${DOCKER_LOGIN}\"
+    --password-stdin ;"
+  on:
+    all_branches: true
