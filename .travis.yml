@@ -5,6 +5,4 @@ jdk:
 
 script:
   - ./gradlew clean jar
-
-after_success:
-  - echo 'testing comming soon'
+  - ./gradlew test
