@@ -12,8 +12,11 @@ env:
   - COVERAGE=0.31 BUILD_TARGET=./monolithic/repository/product
   - COVERAGE=0.31 BUILD_TARGET=./monolithic/repository/user
 
+install:
+  - ./gradlew clean jar
+  
 script:
-  - ./gradlew -p $BUILD_TARGET test
+  - ./gradlew -p $BUILD_TARGET check
 
 after_success:
   - find . -name jacocoTestReport.csv|xargs cat|awk -F',' '{print $3" "$4" "$5}'
