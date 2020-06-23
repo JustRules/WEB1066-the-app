@@ -3,8 +3,15 @@ language: java
 jdk:
   - openjdk8
 
+services:
+  - docker
+
 env:
   - COVERAGE=0.057 BUILD_TARGET=./monolithic/ui
+
+global:
+  - DOCKER_LOGIN=justrules
+  - secure: VLGvBjvzdS25GLYvTVA2eXH1PDq78T3zMzyr3yO8Bayqt6h+7/L+od3cwKQX45a/h4YiVva6oktxlzGihdjHnw6PwQM6V1jFns3hdH2eJfQHas8AsFke668z0hZ+deP4lj8Wg/E5IFgjgwbyLcEgUVcqbyn6yNMraK5D6o3An5mgSX0KDV6aIh8Bl0dj7ZquuZEft+FZJKO9EvCC5yharcwezVDW4AI1OJ031fqHfDwceQyM6sgHaqdpmPuNabIHSOkOc/XSsBAwEl+Nbt+mOP3YHRnBfRY94NR5iDUAk8hvz/DXRHrkBADDXtlSRwMGviPln8hJPA5tIB00jwP/gD9SBIJDnbpMrXTFJPteXtGDi/4m1oFRerFmLaQGngxOIOb7BixzOYhsffUBB6tGyb5tBaCX+07uOY8BuhcU23Hct9+hVbACx0tkwJmNrnKJN3dB6OgvPz04Sx7LQ0rvhGGmfhaoKQUqg8AL4k1J6wBSyH8WCT76oKcaHuQNGWG0JXYaBhCZjEuUvMF+HqGN4inK7Dsdw9ACBOoaFmU4EaROmT5/EmbkYDxRhTgNg2w90xTP9Tyha6X10AuFvFv9qsdR8tP5qNaKFQ+Ykx4zEegaPtiIY3tdwckWwmF7HWotb6gDKaGQtEapk3c/GfAylIi0OoVal/uZRKBnbCOaXkM=
 
 install:
   - ./gradlew clean jar
@@ -14,3 +21,9 @@ script:
 
 after_success:
   - find . -name jacocoTestReport.csv|xargs cat|awk -F',' '{print $3" "$4" "$5}'
+
+deploy:
+  provider: script
+  script: bash -c "echo \"${DOCKER_PASSWORD}\" | docker login --username \"${DOCKER_LOGIN}\" --password-stdin ;"
+  on:
+    all_branches: true
