@@ -26,8 +26,6 @@ after_success:
 deploy:
   provider: script
   script: 
-    - echo $DOCKER_PASSWORD
-    - echo $DOCKER_LOGIN
     - bash -c "echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin ;"
 #    - bash -c "echo \"${DOCKER_PASSWORD}\" | docker login -u \"${DOCKER_LOGIN}\" --password-stdin ;"
   on:
