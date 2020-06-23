@@ -2,16 +2,16 @@ dist: trusty
 language: java
 jdk:
   - openjdk8
-
-services:
-  - docker
+  - openjdk9
 
 env:
   - COVERAGE=0.057 BUILD_TARGET=./monolithic/ui
-
-global:
-  - DOCKER_LOGIN=justrules
-  - secure: "Dy8yW+LvgE/YwzMuxJlbCy0LFaRGs/fiQy+UwKVLVeYqtrxnZM/YV0Reh/+sWUf/0bgOjjNacUfH7a6EAH4IlFbilrb2FYWSaWxq4nYLV9Z6VteHObBR26C4D7Ak2BysLYw/GKalEOtT4KCa+mPZfIvnCNrqvbTIcWFkOkUCSntocRyIcF8hgOn9vSJA/njBNHl4m+lllmDFUlrMMJ2XDFPEsi6J0GsyGuDlqFTxJB7j45za9TWMWtm1YqfNYI/Ef7O9/ECEupKlVxnOWwLBC8wZ82WtaSFaIav4ga9xQygAtx+yvThNS/C9tFW9+gKIUb5nfGbrcdsJxbnJAHlMDnhnKdjw8E7B0doA8zOSO/h1gEu6hSU2VRUEXmcv+mtvqP53BukeuRrB6eN5DU02thNGmYu4aNCvVDH++XmNhpPRTZdF+nunY2aJ6o7pVFrmbWaFk8bFKuKDt3TUWHETyxfuE/D4tNcSPxhDcXMm6MI98FhE6DFteeTJWg8ZqMSgO/tjRm+9rAlWbv7hiY94ozWKyNZCNKtfJcJDWD+j+Ul+KawP4uh6a4sF3d0J/DxxGHicX0mTPSLY/XfoLWE8kyfeQK/JeNB8LBmokhYHz+S8YGWf3U3nXz2N0gHGH2wPjU8BzmvI/M/ZtKMOtqFBEKjTPOoRf4u8rWMixwSMUwA="
+  - COVERAGE=0.148 BUILD_TARGET=./monolithic/service/cart
+  - COVERAGE=0.0 BUILD_TARGET=./monolithic/service/user
+  - COVERAGE=0.36 BUILD_TARGET=./monolithic/repository/order
+  - COVERAGE=0.0 BUILD_TARGET=./monolithic/repository/cart
+  - COVERAGE=0.124 BUILD_TARGET=./monolithic/repository/product
+  - COVERAGE=0.318 BUILD_TARGET=./monolithic/repository/user
 
 install:
   - ./gradlew clean jar
@@ -21,9 +21,3 @@ script:
 
 after_success:
   - find . -name jacocoTestReport.csv|xargs cat|awk -F',' '{print $3" "$4" "$5}'
-
-deploy:
-  provider: script
-  script: bash -c "echo \"${DOCKER_PASSWORD}\" | docker login --username \"${DOCKER_LOGIN}\" --password-stdin ;"
-  on:
-    all_branches: true
