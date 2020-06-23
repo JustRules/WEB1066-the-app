@@ -1,5 +1,10 @@
-# https://hub.docker.com/_/node/
-FROM node:8-onbuild
+ARG JDK_VERSION=openjdk:8
+FROM $JDK_VERSION
+
+ARG user=appuser
+ARG group=appuser
+ARG uid=1000
+ARG gid=1000
 
 # use debug to troubleshoot
 ENV LOG_LEVEL=error
@@ -9,17 +14,14 @@ ENV WEBHOOK_SECRET=development
 ENV WEBHOOK_PROXY_URL=https://localhost:3000/
 ENV PRIVATE_KEY="someprivatestring"
 
-# see https://github.com/nodejs/docker-node/blob/e3ec2111af089e31321e76641697e154b3b6a6c3/docs/BestPractices.md#global-npm-dependencies
-ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
-ENV PATH=$PATH:/home/node/.npm-global/bin
-
 # Lets install our app into /home/node
-COPY . /home/node/the-app
-RUN chown -R node:node /home/node/the-app
+RUN groupadd -g ${gid} ${group} && useradd -u ${uid} -g ${group} -s /bin/sh ${user}
+COPY . /home/appuser/microservices-finaltest
+RUN mkdir -p /home/appuser/.gradle
+RUN chown -R appuser:appuser /home/appuser
+
 
 # setup our app
-# non-root user  https://github.com/nodejs/docker-node/blob/e3ec2111af089e31321e76641697e154b3b6a6c3/docs/BestPractices.md#non-root-user
-USER node
+USER appuser
 
-WORKDIR /home/node/the-app
-RUN npm install
+WORKDIR /home/appuser/microservices-finaltest
