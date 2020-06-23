@@ -25,8 +25,7 @@ after_success:
 
 deploy:
   provider: script
-  script: 
-    script: bash -c "echo \"${DOCKER_PASSWORD}\" | docker login --username \"${DOCKER_LOGIN}\"
-    --password-stdin"
+  script: bash -c "echo \"${DOCKER_PASSWORD}\" | docker login --username \"${DOCKER_LOGIN}\"
+  --password-stdin"
   on:
     all_branches: true
